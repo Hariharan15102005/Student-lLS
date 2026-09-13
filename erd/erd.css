@@ -1,0 +1,346 @@
+/* ==========================================================================
+   HABOTCONNECT FZCO — STUDENT-LSA MATCHING MODULE
+   PHYSICAL DATABASE ARCHITECTURE — ERD STYLESHEET
+   Pure CSS for Professional Landscape Database Architecture ER Diagram
+   ========================================================================== */
+
+:root {
+    --bg-canvas: #f8fafc;
+    --card-bg: #ffffff;
+    --border-color: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --text-type: #2563eb;
+    
+    /* Category Colors */
+    --lineage-header: #475569;
+    --lineage-border: #64748b;
+    --lineage-bg: #f1f5f9;
+    
+    --ref-header: #0284c7;
+    --ref-border: #38bdf8;
+    --ref-bg: #f0f9ff;
+    
+    --core-header: #1e40af;
+    --core-border: #60a5fa;
+    --core-bg: #eff6ff;
+    
+    --match-header: #4338ca;
+    --match-border: #818cf8;
+    --match-bg: #eef2ff;
+    
+    --session-header: #059669;
+    --session-border: #34d399;
+    --session-bg: #ecfdf5;
+    
+    --exception-header: #b91c1c;
+    --exception-border: #f87171;
+    --exception-bg: #fef2f2;
+    
+    /* Badges */
+    --pk-bg: #fef3c7;
+    --pk-text: #b45309;
+    --fk-bg: #e0f2fe;
+    --fk-text: #0369a1;
+    --pkfk-bg: #f3e8ff;
+    --pkfk-text: #7e22ce;
+    --constraint-bg: #fffbeb;
+    --constraint-text: #92400e;
+    --constraint-border: #fde68a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.canvas-container {
+    width: 2000px;
+    height: 1250px;
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Header */
+.erd-header {
+    position: absolute;
+    top: 20px;
+    left: 32px;
+    right: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 16px;
+    z-index: 10;
+}
+
+.title-group h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-group h1 span.tag {
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.title-group p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.header-meta {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.header-meta strong {
+    color: var(--text-secondary);
+}
+
+/* Legend Box */
+.legend-box {
+    position: absolute;
+    top: 90px;
+    left: 32px;
+    width: 320px;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 11px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    z-index: 10;
+}
+
+.legend-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #334155;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 4px;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+}
+
+.line-solid {
+    width: 24px;
+    height: 3px;
+    background-color: #2563eb;
+    border-radius: 2px;
+}
+
+.line-dashed {
+    width: 24px;
+    height: 2px;
+    border-top: 2px dashed #f59e0b;
+}
+
+.line-self {
+    width: 24px;
+    height: 2px;
+    border-top: 2px dotted #64748b;
+}
+
+/* SVG Overlay for Connections */
+.erd-connectors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Table Entity Boxes */
+.erd-table {
+    position: absolute;
+    background-color: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    z-index: 8;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.erd-table:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+}
+
+.table-header {
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.2px;
+}
+
+.table-header .schema-tag {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.85;
+    text-transform: uppercase;
+}
+
+/* Group Color Variants */
+.group-lineage .table-header { background-color: var(--lineage-header); }
+.group-lineage { border-color: var(--lineage-border); }
+
+.group-reference .table-header { background-color: var(--ref-header); }
+.group-reference { border-color: var(--ref-border); }
+
+.group-core .table-header { background-color: var(--core-header); }
+.group-core { border-color: var(--core-border); }
+
+.group-match .table-header { background-color: var(--match-header); }
+.group-match { border-color: var(--match-border); }
+
+.group-session .table-header { background-color: var(--session-header); }
+.group-session { border-color: var(--session-border); }
+
+.group-exception .table-header { background-color: var(--exception-header); }
+.group-exception { border-color: var(--exception-border); }
+
+.table-body {
+    padding: 6px 0;
+    background-color: #ffffff;
+}
+
+.col-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3.5px 12px;
+    font-size: 11px;
+    line-height: 1.35;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.col-row:last-child {
+    border-bottom: none;
+}
+
+.col-name-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.col-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.col-type {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    color: var(--text-type);
+    font-weight: 500;
+}
+
+/* Badges */
+.badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.badge-pk { background-color: var(--pk-bg); color: var(--pk-text); border: 1px solid #fcd34d; }
+.badge-fk { background-color: var(--fk-bg); color: var(--fk-text); border: 1px solid #bae6fd; }
+.badge-pkfk { background-color: var(--pkfk-bg); color: var(--pkfk-text); border: 1px solid #e9d5ff; }
+
+.constraint-note {
+    background-color: var(--constraint-bg);
+    color: var(--constraint-text);
+    border-top: 1px dashed var(--constraint-border);
+    padding: 4px 10px;
+    font-size: 10px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Footer */
+.erd-footer {
+    position: absolute;
+    bottom: 12px;
+    left: 32px;
+    right: 32px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid #e2e8f0;
+    padding-top: 8px;
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        size: A3 landscape;
+        margin: 0;
+    }
+    body {
+        background-color: #ffffff;
+        padding: 0;
+    }
+    .canvas-container {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        box-shadow: none;
+    }
+}

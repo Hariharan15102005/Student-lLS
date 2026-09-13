@@ -1,0 +1,146 @@
+erDiagram
+    %% ============================================================================
+    %% HABOTCONNECT FZCO - STUDENT-LSA MATCHING MODULE
+    %% BUSINESS ENTITY RELATIONSHIP DIAGRAM (ERD)
+    %% ============================================================================
+
+    lineage_audit_ledger {
+        UUID execution_id PK "Universal Task Node"
+        UUID trace_id "Workflow Correlation ID"
+        VARCHAR task_name "Pipeline Task Name"
+        VARCHAR system_node "Executing Host/Node"
+        UUID parent_execution_id FK "Upstream Task in DAG"
+        VARCHAR status "COMPLETED, FAILED"
+        TIMESTAMPTZ started_at
+        TIMESTAMPTZ completed_at
+        JSONB metadata_payload
+    }
+
+    locations {
+        UUID location_id PK "Geographical Zone ID"
+        VARCHAR city_zone UK "Dubai Marina, etc."
+        VARCHAR emirate_or_region "Dubai, Abu Dhabi"
+        VARCHAR country_code "ARE"
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    difficulty_categories {
+        UUID difficulty_id PK "Category ID"
+        VARCHAR category_code UK "ADHD, DYSLEXIA, etc."
+        VARCHAR category_name "Full Category Name"
+        TEXT description
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    lsa_specializations {
+        UUID specialization_id PK "Specialization ID"
+        VARCHAR specialization_code UK "BEHAVIORAL, etc."
+        VARCHAR specialization_name "Specialization Name"
+        TEXT description
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    students {
+        UUID student_id PK "Enrolled Child ID"
+        VARCHAR full_name "Student Legal Name"
+        UUID location_id FK "Home Zone"
+        DATE intake_date
+        TIMESTAMPTZ created_at
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    student_difficulties {
+        UUID student_id PK,FK "Student Reference"
+        UUID difficulty_id PK,FK "Difficulty Reference"
+        BOOLEAN is_primary "Primary Diagnosis Flag"
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    student_schedules {
+        UUID schedule_id PK "Schedule Slot ID"
+        UUID student_id FK "Student Reference"
+        SMALLINT day_of_week "1=Mon, 7=Sun"
+        TIME start_time
+        TIME end_time "end_time > start_time"
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    lsas {
+        UUID lsa_id PK "LSA Profile ID"
+        VARCHAR full_name "LSA Legal Name"
+        UUID specialization_id FK "Specialization Domain"
+        VARCHAR qualification_level "Tier 1 - 4"
+        NUMERIC hourly_rate "CHECK rate > 0.00 AED"
+        BOOLEAN is_active "Availability Status"
+        DATE onboarding_date
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    match_allocations {
+        UUID match_id PK "Match Allocation ID"
+        UUID student_id FK "Matched Student"
+        UUID lsa_id FK "Matched Assistant"
+        NUMERIC compatibility_score "CHECK 0.0000 to 1.0000"
+        VARCHAR match_status "ACTIVE, TERMINATED, etc."
+        DATE effective_start_date
+        DATE effective_end_date
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    session_attendance {
+        UUID session_id PK "Session Log ID"
+        UUID match_id FK "Match Reference"
+        TIMESTAMPTZ session_start_time
+        TIMESTAMPTZ session_end_time "end > start"
+        NUMERIC verified_hours "CHECK hours >= 0.00"
+        VARCHAR session_status "VERIFIED, FLAGGED"
+        VARCHAR telemetry_device_id
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    system_exception_events {
+        UUID event_id PK "Exception Event ID"
+        VARCHAR failed_message_id "Failed Message ID"
+        VARCHAR error_type "Error Classification"
+        VARCHAR system_node "Reporting Node"
+        JSONB raw_failed_payload "Raw Payload"
+        TIMESTAMPTZ event_timestamp
+        BOOLEAN resolved
+        TEXT resolution_notes
+        UUID trace_id
+        UUID immediate_predecessor_id FK
+    }
+
+    %% Relationships
+    locations ||--o{ students : "home_zone"
+    students ||--|{ student_difficulties : "has_needs"
+    difficulty_categories ||--o{ student_difficulties : "categorizes"
+    students ||--|{ student_schedules : "availability"
+    
+    lsa_specializations ||--o{ lsas : "specializes_in"
+    
+    students ||--o{ match_allocations : "matched_to"
+    lsas ||--o{ match_allocations : "assigned_to"
+    
+    match_allocations ||--o{ session_attendance : "logs_sessions"
+    
+    lineage_audit_ledger ||--o{ lineage_audit_ledger : "parent_task"
+    lineage_audit_ledger ||--o{ locations : "locks_lineage"
+    lineage_audit_ledger ||--o{ difficulty_categories : "locks_lineage"
+    lineage_audit_ledger ||--o{ lsa_specializations : "locks_lineage"
+    lineage_audit_ledger ||--o{ students : "locks_lineage"
+    lineage_audit_ledger ||--o{ student_difficulties : "locks_lineage"
+    lineage_audit_ledger ||--o{ student_schedules : "locks_lineage"
+    lineage_audit_ledger ||--o{ lsas : "locks_lineage"
+    lineage_audit_ledger ||--o{ match_allocations : "locks_lineage"
+    lineage_audit_ledger ||--o{ session_attendance : "locks_lineage"
+    lineage_audit_ledger ||--o{ system_exception_events : "locks_lineage"
