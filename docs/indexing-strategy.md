@@ -18,7 +18,7 @@ In this architecture:
 
 ---
 
-## 2. Comprehensive Index Inventory & Justification
+## 2. Comprehensive Index Inventory and  Justification
 
 | # | Index Name | Target Table | Columns Indexed | Index Type | Query / Workload Supported | Tradeoff / Cost Analysis |
 | :-: | :--- | :--- | :--- | :--- | :--- | :--- |
