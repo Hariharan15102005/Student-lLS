@@ -6,13 +6,13 @@
 
 ---
 
-## 1. Indexing Philosophy & Strategy
+## 1.Indexing Philosophy & Strategy
 
 An effective indexing strategy balances **read acceleration** against **write amplification and storage overhead**. Creating indexes on every column degrades `INSERT` and `UPDATE` throughput, especially for high-frequency telemetry ingestion from mobile devices (SD3).
 
 In this architecture:
 - Every `FOREIGN KEY` is indexed to eliminate full table scans during joins and parent-child integrity validations.
-- Composite covering indexes are tailored specifically to accelerate the **Monthly LSA-Student Match & Payout Report**.
+- Composite covering indexes are tailored specifically to accelerate the **Monthly LSA-Student Match and Payout Report**.
 - Partial (filtered) indexes are used to index only active or unverified subsets, reducing index footprint by up to 80%.
 - Generalized Inverted Indexes (`GIN`) are deployed on `JSONB` error payloads for schema-agnostic searching.
 
